@@ -24,7 +24,7 @@ class MainView: UIViewController {
         tableView.register(TableCell.self, forCellReuseIdentifier: "Cell")
         return tableView
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -34,7 +34,7 @@ class MainView: UIViewController {
         setUpView()
     }
     
-   private func setUpView() {
+    private func setUpView() {
         
         self.view.backgroundColor = .systemGray6
         self.view.addSubview(tableView)
@@ -48,7 +48,7 @@ class MainView: UIViewController {
         ])
     }
     
-   private func setUpImagePicker() {
+    private func setUpImagePicker() {
         let picker = UIImagePickerController()
         picker.sourceType = .camera
         picker.delegate = self
