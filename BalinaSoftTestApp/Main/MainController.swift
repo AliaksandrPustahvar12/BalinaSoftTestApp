@@ -35,10 +35,6 @@ final class MainController: MainControllerProtocol {
         
         Task {
             await getPhotos(for: page)
-            
-            await MainActor.run {
-                view?.reloadTableView()
-            }
         }
     }
     
