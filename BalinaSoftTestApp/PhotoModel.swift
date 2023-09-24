@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct PhotoTypeDtoOut: Decodable {
     let content: [PhotoDtoOut]
     let page: Int

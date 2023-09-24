@@ -15,6 +15,7 @@ protocol MainViewProtocol: AnyObject {
 class MainView: UIViewController {
     
     private var controller: MainControllerProtocol?
+    private var photoId: Int?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -26,7 +27,6 @@ class MainView: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-       // view.backgroundColor = .white
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -34,7 +34,7 @@ class MainView: UIViewController {
         setUpView()
     }
     
-    func setUpView() {
+   private func setUpView() {
         
         self.view.backgroundColor = .systemGray6
         self.view.addSubview(tableView)
@@ -47,9 +47,17 @@ class MainView: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5)
         ])
     }
+    
+   private func setUpImagePicker() {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = self
+        present(picker, animated: true)
+    }
 }
 
 extension MainView: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return controller?.photos.count ?? 0
     }
@@ -68,6 +76,11 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        photoId = controller?.photos[indexPath.row].id
+        setUpImagePicker()
+    }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView)  {
         guard let controller = controller else { return }
         let pos = scrollView.contentOffset.y
@@ -77,6 +90,23 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
                 await controller.getPhotos(for: controller.page)
             }
         }
+    }
+}
+
+extension MainView: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
+        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
+        guard let id = photoId else { return }
+        controller?.uploadPhoto(image: imageData, id: id)
     }
 }
 

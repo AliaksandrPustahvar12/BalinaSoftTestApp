@@ -10,6 +10,7 @@ import Foundation
 protocol MainControllerProtocol {
     func getPhotos(for page: Int) async
     func getImageData(url: String) async -> Data?
+    func uploadPhoto(image: Data, id: Int)
     var photos: [PhotoTypeDtoOut.PhotoDtoOut] { get set }
     var page: Int { get set }
     var isPagOn: Bool { get set }
@@ -19,22 +20,23 @@ final class MainController: MainControllerProtocol {
     
     var photos: [PhotoTypeDtoOut.PhotoDtoOut] = []
     var page = 0
-    var maxPages: Int?
     var isPagOn: Bool = false
+    
+    private var maxPages: Int?
     private weak var view: MainViewProtocol?
     private var netService = NetworkService()
     private var path = "/api/v2/photo/type"
+    private var pathToUpload = "/api/v2/photo"
     
     init(view: MainViewProtocol?) {
         self.view = view
         
         Task {
-           await getPhotos(for: page)
-                
-                DispatchQueue.main.async {
-//                    view?.spinner.stopAnimating()
-                    view?.reloadTableView()
-                }
+            await getPhotos(for: page)
+            
+            DispatchQueue.main.async {
+                view?.reloadTableView()
+            }
         }
     }
     
@@ -55,11 +57,20 @@ final class MainController: MainControllerProtocol {
         isPagOn = false
     }
     
-  func getImageData(url: String) async -> Data? {
-            do {
-                return try await netService.getImage(url: url)
-            } catch {
-                return nil
-            }
+    func getImageData(url: String) async -> Data? {
+        do {
+            return try await netService.getImage(url: url)
+        } catch {
+            return nil
         }
     }
+    
+    func uploadPhoto(image: Data, id: Int) {
+        let parameters: [String: Any] = [
+            "name": "Pustahvar Aliaksandr",
+            "photo": image,
+            "typeId": String(id)
+        ]
+        netService.uploadPhotoToServer(id: id, path: pathToUpload, parameters: parameters)
+    }
+}
