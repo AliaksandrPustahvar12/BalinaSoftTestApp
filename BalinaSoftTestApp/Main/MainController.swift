@@ -24,9 +24,11 @@ final class MainController: MainControllerProtocol {
     
     private var maxPages: Int?
     private weak var view: MainViewProtocol?
-    private var netService = NetworkService()
-    private var path = "/api/v2/photo/type"
-    private var pathToUpload = "/api/v2/photo"
+    private let netService = NetworkService()
+    
+    private let host = "junior.balinasoft.com"
+    private let path = "/api/v2/photo/type"
+    private let pathToUpload = "/api/v2/photo"
     
     init(view: MainViewProtocol?) {
         self.view = view
@@ -34,7 +36,7 @@ final class MainController: MainControllerProtocol {
         Task {
             await getPhotos(for: page)
             
-            DispatchQueue.main.async {
+            await MainActor.run {
                 view?.reloadTableView()
             }
         }
@@ -42,13 +44,16 @@ final class MainController: MainControllerProtocol {
     
     func getPhotos(for page: Int) async {
         isPagOn = true
-        if maxPages == nil || page < maxPages ?? 0 {
-            if let newPage: PhotoTypeDtoOut = await netService.fetchData(path: path, page: String(page)) {
+        if maxPages == nil || page < maxPages! {
+            let pageString = String(page)
+            let queryItems: [URLQueryItem] = [.init(name: "page", value: pageString)]
+            if let newPage: PhotoTypeDtoOut = await netService.fetchData(host: host, path: path, page: pageString, queryItems: queryItems) {
                 photos.append(contentsOf: newPage.content)
                 
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.view?.reloadTableView()
                 }
+                
                 self.maxPages = newPage.totalPages
                 self.page += 1
             }
@@ -57,19 +62,16 @@ final class MainController: MainControllerProtocol {
     }
     
     func getImageData(url: String) async -> Data? {
-        do {
-            return try await netService.getImage(url: url)
-        } catch {
-            return nil
-        }
+        try? await netService.getImage(url: url)
     }
     
     func uploadPhoto(image: Data, id: Int) {
+        let queryItems: [URLQueryItem] = [.init(name: "id", value: String(id))]
         let parameters: [String: Any] = [
             "name": "Pustahvar Aliaksandr",
             "photo": image,
             "typeId": String(id)
         ]
-        netService.uploadPhotoToServer(id: id, path: pathToUpload, parameters: parameters)
+        netService.uploadPhotoToServer(host: host, path: pathToUpload, queryItems: queryItems, parameters: parameters)
     }
 }

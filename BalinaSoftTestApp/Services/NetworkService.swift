@@ -10,14 +10,9 @@ import Alamofire
 
 final class NetworkService {
     
-    func fetchData(path: String, page: String) async -> PhotoTypeDtoOut? {
-        let urlComponents = getUrlComponents(path: path, page: page)
-        do {
-            return try await AF.request(urlComponents).serializingDecodable(PhotoTypeDtoOut.self,
-                                                                            decoder: JSONDecoder()).value
-        } catch {
-            return nil
-        }
+    func fetchData(host: String, path: String, page: String, queryItems: [URLQueryItem]) async -> PhotoTypeDtoOut? {
+        let urlComponents = getUrlComponents(host: host, path: path, queryItems: queryItems)
+        return try? await AF.request(urlComponents).serializingDecodable(PhotoTypeDtoOut.self).value
     }
     
     func getImage(url: String) async throws -> Data? {
@@ -29,7 +24,7 @@ final class NetworkService {
         return data
     }
     
-    func uploadPhotoToServer(id: Int, path: String, parameters: [String: Any]) {
+    func uploadPhotoToServer(host: String, path: String, queryItems: [URLQueryItem], parameters: [String: Any]) {
         AF.upload(multipartFormData: { multipartFormData in
             for (key, value) in parameters {
                 if let data = value as? Data {
@@ -38,28 +33,19 @@ final class NetworkService {
                     multipartFormData.append(string.data(using: .utf8)!, withName: key)
                 }
             }
-        }, to: uploadUrlComponents(path: path, id: id), method: .post).responseDecodable(of: PhotoUploadDtoOut.self ) { result in
+        }, to: getUrlComponents(host: host, path: path, queryItems: queryItems), method: .post).responseDecodable(of: PhotoUploadDtoOut.self ) { result in
             debugPrint(result)
-           }
         }
-    
-   private func getUrlComponents(path: String, page: String) -> URLComponents {
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "junior.balinasoft.com"
-        urlComponents.path = path
-        urlComponents.queryItems = [.init(name: "page", value: page)]
-        return urlComponents
     }
     
-   private func uploadUrlComponents(path: String, id: Int) -> URLComponents {
+    private func getUrlComponents(host: String, path: String, queryItems: [URLQueryItem]) -> URLComponents {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
-        urlComponents.host = "junior.balinasoft.com"
+        urlComponents.host = host
         urlComponents.path = path
-        urlComponents.queryItems = [.init(name: "id", value: String(id))]
+        urlComponents.queryItems = queryItems
         return urlComponents
-     }
+    }
     
     enum MyErrors: Error {
         case badUrl

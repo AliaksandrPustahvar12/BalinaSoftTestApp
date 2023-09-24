@@ -63,7 +63,8 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TableCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? TableCell else { return UITableViewCell()
+        }
         cell.cellLabel.text = controller?.photos[indexPath.row].name
         
         if let url = controller?.photos[indexPath.row].image {
@@ -73,9 +74,7 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
                 }
             }
         } else {
-            DispatchQueue.main.async {
-                cell.cellImageView.image = UIImage(systemName: "photo")
-            }
+            cell.cellImageView.image = UIImage(systemName: "photo")
         }
         return cell
     }
@@ -107,9 +106,12 @@ extension MainView: UIImagePickerControllerDelegate, UINavigationControllerDeleg
         
         picker.dismiss(animated: true, completion: nil)
         
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else { return }
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else { return }
-        guard let id = photoId else { return }
+        guard
+            let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage,
+            let imageData = image.jpegData(compressionQuality: 0.8),
+            let id = photoId
+        else { return }
+        
         controller?.uploadPhoto(image: imageData, id: id)
     }
 }

@@ -9,9 +9,7 @@ import UIKit
 
 final class TableCell: UITableViewCell {
     
-    static let identifier = "Cell"
-
-     let cellImageView: UIImageView = {
+    let cellImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -20,7 +18,7 @@ final class TableCell: UITableViewCell {
         return imageView
     }()
     
-     let cellLabel: UILabel = {
+    let cellLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
@@ -58,7 +56,7 @@ final class TableCell: UITableViewCell {
         NSLayoutConstraint.activate([
             cellLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             cellLabel.leadingAnchor.constraint(equalTo: cellImageView.trailingAnchor, constant: 10)
-            ])
+        ])
     }
     
     required init?(coder: NSCoder) {
