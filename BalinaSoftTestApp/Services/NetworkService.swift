@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-class NetworkService {
+final class NetworkService {
     
     func fetchData(path: String, page: String) async -> PhotoTypeDtoOut? {
         let urlComponents = getUrlComponents(path: path, page: page)
@@ -38,12 +38,12 @@ class NetworkService {
                     multipartFormData.append(string.data(using: .utf8)!, withName: key)
                 }
             }
-        }, to: uploadUrlComponents(path: path, id: id), method: .post) { result in
-            print (result)
+        }, to: uploadUrlComponents(path: path, id: id), method: .post).responseDecodable(of: PhotoUploadDtoOut.self ) { result in
+            debugPrint(result)
+           }
         }
-    }
     
-    func getUrlComponents(path: String, page: String) -> URLComponents {
+   private func getUrlComponents(path: String, page: String) -> URLComponents {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "junior.balinasoft.com"
@@ -52,15 +52,14 @@ class NetworkService {
         return urlComponents
     }
     
-    func uploadUrlComponents(path: String, id: Int) -> URLComponents {
+   private func uploadUrlComponents(path: String, id: Int) -> URLComponents {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "junior.balinasoft.com"
         urlComponents.path = path
         urlComponents.queryItems = [.init(name: "id", value: String(id))]
         return urlComponents
-
-    }
+     }
     
     enum MyErrors: Error {
         case badUrl

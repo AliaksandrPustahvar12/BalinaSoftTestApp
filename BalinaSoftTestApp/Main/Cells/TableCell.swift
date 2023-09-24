@@ -13,10 +13,10 @@ class TableCell: UITableViewCell {
 
      let cellImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
-         imageView.clipsToBounds = true
-         imageView.layer.cornerRadius = 8
-       // imageView.image = UIImage(systemName: "circle")
+        imageView.layer.cornerRadius = 8
+        imageView.tintColor = .systemGray5
         return imageView
     }()
     
@@ -24,7 +24,6 @@ class TableCell: UITableViewCell {
         let label = UILabel()
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
-        //label.text = "Some text"
         label.adjustsFontSizeToFitWidth = true
         return label
     }()
@@ -44,6 +43,7 @@ class TableCell: UITableViewCell {
         self.layer.borderWidth = 3
         self.layer.borderColor = UIColor.systemGray5.cgColor
         self.layer.cornerRadius = 10
+        self.clipsToBounds = true
         
         cellImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

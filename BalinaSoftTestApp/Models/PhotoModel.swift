@@ -19,3 +19,6 @@ struct PhotoTypeDtoOut: Decodable {
     }
 }
 
+struct PhotoUploadDtoOut: Decodable {
+    let id: String
+}

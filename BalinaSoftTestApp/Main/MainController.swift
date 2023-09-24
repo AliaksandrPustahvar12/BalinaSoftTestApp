@@ -42,11 +42,10 @@ final class MainController: MainControllerProtocol {
     
     func getPhotos(for page: Int) async {
         isPagOn = true
-        print( page )
         if maxPages == nil || page < maxPages ?? 0 {
             if let newPage: PhotoTypeDtoOut = await netService.fetchData(path: path, page: String(page)) {
                 photos.append(contentsOf: newPage.content)
-                print(photos.count)
+                
                 DispatchQueue.main.async {
                     self.view?.reloadTableView()
                 }

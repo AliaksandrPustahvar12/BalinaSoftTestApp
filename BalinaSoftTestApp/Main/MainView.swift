@@ -19,7 +19,7 @@ class MainView: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.backgroundColor = .systemGray6
+        tableView.backgroundColor = .systemGray5
         tableView.separatorStyle = .none
         tableView.register(TableCell.self, forCellReuseIdentifier: "Cell")
         return tableView
@@ -36,7 +36,7 @@ class MainView: UIViewController {
     
     private func setUpView() {
         
-        self.view.backgroundColor = .systemGray6
+        self.view.backgroundColor = .systemGray5
         self.view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -71,6 +71,10 @@ extension MainView: UITableViewDataSource, UITableViewDelegate {
                 if let imageData = await controller?.getImageData(url: url) {
                     cell.cellImageView.image = UIImage(data: imageData)
                 }
+            }
+        } else {
+            DispatchQueue.main.async {
+                cell.cellImageView.image = UIImage(systemName: "photo")
             }
         }
         return cell

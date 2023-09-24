@@ -66,16 +66,48 @@
 			children = (
 				D4595A672ABDF84A00DC7FCD /* AppDelegate.swift */,
 				D4595A692ABDF84A00DC7FCD /* SceneDelegate.swift */,
-				D4595A7D2ABDFA9600DC7FCD /* MainController.swift */,
-				D4595A7B2ABDF9F700DC7FCD /* MainView.swift */,
-				D4595A812ABE8E6800DC7FCD /* PhotoModel.swift */,
-				D4595A832ABE8FE400DC7FCD /* NetworkService.swift */,
-				D4595A7F2ABE08C100DC7FCD /* TableCell.swift */,
+				D4595A882AC073C600DC7FCD /* Main */,
+				D4595A8A2AC0745300DC7FCD /* Models */,
+				D4595A8B2AC0746900DC7FCD /* Services */,
 				D4595A702ABDF84B00DC7FCD /* Assets.xcassets */,
 				D4595A722ABDF84B00DC7FCD /* LaunchScreen.storyboard */,
 				D4595A752ABDF84B00DC7FCD /* Info.plist */,
 			);
 			path = BalinaSoftTestApp;
+			sourceTree = "<group>";
+		};
+		D4595A882AC073C600DC7FCD /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				D4595A7B2ABDF9F700DC7FCD /* MainView.swift */,
+				D4595A7D2ABDFA9600DC7FCD /* MainController.swift */,
+				D4595A892AC073F100DC7FCD /* Cells */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		D4595A892AC073F100DC7FCD /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				D4595A7F2ABE08C100DC7FCD /* TableCell.swift */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
+		D4595A8A2AC0745300DC7FCD /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D4595A812ABE8E6800DC7FCD /* PhotoModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D4595A8B2AC0746900DC7FCD /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				D4595A832ABE8FE400DC7FCD /* NetworkService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
