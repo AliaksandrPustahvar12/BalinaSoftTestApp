@@ -12,7 +12,7 @@ protocol MainViewProtocol: AnyObject {
     func reloadTableView()
 }
 
-class MainView: UIViewController {
+final class MainView: UIViewController {
     
     private var controller: MainControllerProtocol?
     private var photoId: Int?
